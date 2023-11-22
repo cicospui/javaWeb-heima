@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS-对象-Array</title>
+</head>
+<body>
+    
+</body>
+<script>
+    var arr = [1,2,3,4]
+    arr[10] = 5
+
+    console.log(arr[10])
+    console.log(arr[9])
+
+    console.log(arr)
+
+    // forEach:遍历数组中有值的元素
+    arr.forEach(function(e){
+        document.write(e+'\n')
+    })
+
+    // push:添加元素到尾部
+    arr.push(7,8,9);
+    console.log(arr)
+
+    // splice:删除元素
+    arr.splice(2,3);
+    console.log(arr)
+</script>
+</html>
