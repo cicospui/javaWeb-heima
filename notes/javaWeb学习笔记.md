@@ -8,7 +8,7 @@ Web中的三剑客：
 
 ![1](figs/前端三剑客的作用.png)
 
-# Day1
+# Day1-HTML到CSS
 
 HTML是一种**超文本**标记语言，可以定义文字、图片、音频、视频：
 
@@ -79,7 +79,7 @@ CSS的三种引入方式：
 
 注：单选按钮中要确定name字段完全相同。
 
-# Day02
+# Day02-JS语句到VUE框架
 
 ## JS
 
@@ -205,7 +205,7 @@ VUE的建立方式可以简单概括为：
 
 > 基本只需要知道**Mounted**周期，VUE初始化成功，HTML渲染成功，发送请求到服务端，加载数据。
 
-# Day03
+# Day03-Ajax到VUE项目与前端项目的打包部署
 
 ## Ajax
 
@@ -303,7 +303,7 @@ APP.vue是一种根组件，分为三部分，其结构为：
 
 可以在**nginx.conf**文件中更改端口号到90。
 
-# Day04
+# Day04-maven学习和Web入门
 
 ## maven-管理和构建maven项目的工具
 
@@ -393,7 +393,7 @@ Web服务器是一个软件程序，对HTTP协议的操作进行封装，使得�
 
 **Springboot其实内嵌了Tomcat**，启动SpringBoot时，都会自动启动Tomcat，所以自己安装的Tomcat基本用不到。
 
-# Day05
+# Day05-从postman到请求响应参数与分层解耦的写法controller\dao\service
 
 ## 模型
 
@@ -476,3 +476,52 @@ Web服务器是一个软件程序，对HTTP协议的操作进行封装，使得�
 还有更细的Bean包扫描问题，用于不在同目录下的问题，但还是建议三层的包全在统一目录下（规范）。
 
 DI的问题，如果有两个依赖注入的实现类，会导致无法运行。可以使用其他注解来解决这个冲突问题。
+
+# Day06-MySQL语句
+
+Dao层访问数据，但企业一般不会将数据直接存在xml文件中，而是存储在数据库中的。
+
+数据库中的内容又需要特定的数据库语句进行操作。
+
+
+
+
+
+# Day08-从MySQL到Mybatis入门
+
+
+
+
+
+
+
+## Mybatis入门
+
+以上都是通过Datagrip操控的数据库，而实际开发需要通过java操作数据库，就需要用到Mybatis。
+
+Mybatis是持久层的框架，为了简化JDBC繁琐的开发。SpringBoot里又整合了Mybatis。
+
+![1](figs/08-如何使用Mybatis.png)
+
+使用的SpringBoot集成的Mybatis，就将数据库的四要素写在properties文件中，并使用Mapper注解。
+
+## JDBC
+
+Mybatis就是对JDBC操作的简化，**JDBC则是JAVA操作关系型数据库的一套API**。这只是一套接口规范，而各数据库的公司提供JDBC的实现，如MySQL实现、Oracle实现等（也叫数据库驱动）。
+
+![1](figs/08-JDBC介绍.png)
+
+直接使用JDBC有**硬编码**、**代码繁琐**、频繁的资源获取和释放同时导致了**资源浪费**。Mybatis通过**数据库连接池**技术，完胜！使用Spring Boot和Mybatis结合起来，只需要考虑properties文件和mapper接口的写法即可。
+
+## 数据库连接池
+
+![1](figs/08-数据库连接池.png)
+
+SpringBoot中就默认着使用的连接池是**Hikari追光者**。另外用的多的就是一个Druid连接池。
+
+## LomBok工具包
+
+![1](figs/08-Lombok.png)
+
+# Day09
+
