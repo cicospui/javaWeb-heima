@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.mapper.EmpMapper">
+    <sql id="commonSelect">
+        select id,username,password,gender,image,job,entrydate,dept_id,create_time,update_time
+        from emp
+    </sql>
+    <update id="update2">
+        update emp
+        <set>
+            <if test="username != null"> username = #{username},</if>
+            <if test="name != null"> name = #{name},</if>
+            <if test="gender != null"> gender = #{gender},</if>
+            <if test="image != null"> image = #{image},</if>
+            <if test="job != null"> job = #{job},</if>
+            <if test="entrydate != null"> entrydate = #{entrydate},</if>
+            <if test="deptId != null"> dept_id = #{deptId},</if>
+            <if test="updateTime != null"> update_time = #{updateTime}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="list" resultType="com.itheima.pojo.Emp">
+        <include refid="commonSelect"/>
+        <where>
+            <if test="name != null">
+                name like concat('%', #{name}, '%')
+            </if>
+            <if test="gender != null">
+                and gender = #{gender}
+            </if>
+            <if test="begin != null and end != null">
+                and entrydate between #{begin} and #{end}
+            </if>
+            order by update_time desc
+        </where>
+    </select>
+
+    <delete id="deleteByIds">
+        delete from emp where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+
+
+    </delete>
+
+
+</mapper>
