@@ -575,3 +575,44 @@ mybatis.configuration.map-underscore-to-camel-case=true
 为了在xml文件中提升代码的复用性能，可以用SQL标签把某些SQL语句打包下，再通过Include标签引入打包过的 SQL语句。
 
 ![1](figs/09-SQL和Include标签.png)
+
+# Day10-一个案例（上）
+
+案例的准备工作可以概括为：
+
+![1](figs/10-案例概述.png)
+
+以及一些概念：**接口文档**、**Restful开发规范**（分为传统风格和Rest风格接口，本项目采用后者）、统一响应结果Result。
+
+## 部门管理
+
+一个简单的查询操作步骤可以分解成以下：
+
+![1](figs/10-部门管理-查询操作.png)
+
+### 限定请求方式
+
+从@RequestMapping到更封装的注解**@GetMapping**。
+
+### Controller中提取公共路径
+
+Controller里的方法有公共路径，为了方便可以为这个类加一个@request Mapping作为公共路径。
+
+## 员工管理
+
+![1](figs/10-员工管理.png)
+
+![1](figs/10-员工管理三层步骤.png)
+
+参数默认值设置的注解**@DefaultValue**。
+
+### 分页查询
+
+分页查询是一个步骤比较固定，过程又比较繁琐的操作，所以简化是比较紧迫的。**PageHelper**就是一个简化的工具，其作用如下，需要引入pom依赖：
+
+![1](figs/10-PageHelper分页工具.png)
+
+### 条件分页查询
+
+![1](figs/10-条件分页查询.png)
+
