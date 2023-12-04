@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -54,7 +55,26 @@ public class EmpServiceImpl implements EmpService {
         empMapper.delete(ids);
     }
 
+    @Override
+    public void save(Emp emp) {
 
+        // 添加员工信息
+        emp.setCreateTime(LocalDateTime.now());
+        emp.setUpdateTime(LocalDateTime.now());
+        empMapper.insert(emp);
 
+    }
 
+    @Override
+    public Emp get(Integer id) {
+        // 查询员工信息
+        return empMapper.getById(id);
+    }
+
+    @Override
+    public void update(Emp emp) {
+        // 修改员工信息
+        emp.setUpdateTime(LocalDateTime.now());
+        empMapper.update(emp);
+    }
 }

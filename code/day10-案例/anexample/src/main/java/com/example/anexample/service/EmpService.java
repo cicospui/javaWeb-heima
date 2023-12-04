@@ -1,5 +1,6 @@
 package com.example.anexample.service;
 
+import com.example.anexample.pojo.Emp;
 import com.example.anexample.pojo.PageBean;
 import org.springframework.stereotype.Service;
 
@@ -19,4 +20,9 @@ public interface EmpService {
     void delete(List<Integer> ids);
 
 
+    void save(Emp emp);
+
+    Emp get(Integer id);
+
+    void update(Emp emp);
 }

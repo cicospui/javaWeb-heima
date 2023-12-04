@@ -1,5 +1,6 @@
 package com.example.anexample.controller;
 
+import com.example.anexample.pojo.Emp;
 import com.example.anexample.pojo.PageBean;
 import com.example.anexample.pojo.Result;
 import com.example.anexample.service.EmpService;
@@ -39,6 +40,27 @@ public class EmpController {
     public Result delete(@PathVariable List<Integer> ids){
         log.info("删除员工信息:{}",ids);
         empService.delete(ids);
+        return Result.success();
+    }
+
+    @PostMapping("/emps")
+    public Result save(@RequestBody Emp emp){
+        log.info("添加员工信息:{}",emp);
+        empService.save(emp);
+        return Result.success();
+    }
+
+    @GetMapping("/emps/{id}")
+    public Result get(@PathVariable Integer id){
+        log.info("查询{}员工信息",id);
+        Emp emp = empService.get(id);
+        return Result.success(emp);
+    }
+
+    @PutMapping("/emps")
+    public Result update(@RequestBody Emp emp){
+        log.info("修改员工信息:{}",emp);
+        empService.update(emp);
         return Result.success();
     }
 }
