@@ -1,4 +1,4 @@
-javaWeb学习笔记
+1javaWeb学习笔记
 
 # 入门
 
@@ -704,3 +704,170 @@ spring.servlet.multipart.max-request-size=100MB
 一个个参数从application文件对应过去很麻烦，所以又有一个新的注解可以简化这个过程，只需要在注解中指定配置文件的名称，并在类中一一对应即可：
 
 ![1](figs/11-ConfigurationProperties注解.png)
+
+# Day12-登录
+
+## 登录功能
+
+通过设置**SQL查询语句**来实现登录的功能。
+
+```sql
+select * from emp where username = "jinyong" and password = "123456"
+```
+
+实现思路为：
+
+![1](figs/12-登录功能的思路.png)
+
+## 登录校验
+
+仅仅实现一个登录的Controller是不够的，还需要实现当没有登录时，将页面跳转到登录界面才正常。
+
+### 限制
+
+HTTP协议是**无状态**的协议，服务器无法仅靠HTTP请求判断是否登录成功。一般而言是存储一个登录标记来区分，并在取出登录标记前对登录请求进行统一拦截：
+
+![1](figs/12-登录校验的整体过程.png)
+
+### 会话技术
+
+打开浏览器访问Web服务器资源，就是一个会话的建立。
+
+![11](figs/12-会话跟踪技术.png)
+
+#### Cookie
+
+本身的HTTP协议就携带了Cookie技术，所以很多都是自带的。但是Cookie不太适用于**跨域请求**。
+
+![1](figs/12-Cookie方案的详情.png)
+
+#### Session
+
+这是服务器端的会话跟踪方案，但是现在不怎么用了。
+
+![1](figs/12-Session的详情.png)
+
+#### 令牌技术
+
+现在采用的方案是令牌技术，属于目前最优的方案。
+
+![1](figs/12-令牌方案.png)
+
+### JWT令牌技术
+
+一种JSON数据格式的令牌技术。
+
+![1](figs/12-JWT令牌.png)
+
+过程为先生成令牌，后校验令牌：
+
+![1](figs/12-JWT令牌的使用过程.png)
+
+#### 生成和校验
+
+引入Maven依赖：**jjwt**。通过**Jwts.builder**构造令牌。
+
+测试一下生成令牌：
+
+```java
+@Test
+    public void testGenJwt(){
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id",1);
+        claims.put("name","tom");
+
+        String jwt = Jwts.builder()
+                .signWith(SignatureAlgorithm.HS256, "itheima")//签名算法
+                .setClaims(claims) //自定义内容(载荷)
+                .setExpiration(new Date(System.currentTimeMillis() + 3600 * 1000))//设置有效期为1h
+                .compact();
+        System.out.println(jwt);
+    }
+```
+
+之后对这个令牌解码：
+
+```java
+@Test
+    public void testParseJwt(){
+        Claims claims = Jwts.parser()
+                .setSigningKey("itheima")
+                .parseClaimsJws("eyJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoidG9tIiwiaWQiOjEsImV4cCI6MTcwMTg1ODcwMn0.QxfU2bNtPV2ZFUxgY9r-MHmibS2yR-MPYrZktMbZIgg")
+                .getBody();
+        System.out.println(claims);
+    }
+```
+
+只有令牌校验通过后，才能允许进一步操作和服务。
+
+为了能使用令牌功能，需要在之前实现的登录功能中引入令牌的操作：
+
+```java
+@PostMapping("/login")
+    public Result login(@RequestBody Emp emp){
+        log.info("员工登录: {}", emp);
+        Emp e = empService.login(emp);
+
+        //登录成功,生成令牌,下发令牌
+        if (e != null){
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("id", e.getId());
+            claims.put("name", e.getName());
+            claims.put("username", e.getUsername());
+
+            String jwt = JwtUtils.generateJwt(claims); //jwt包含了当前登录的员工信息
+            return Result.success(jwt);
+        }
+
+        //登录失败, 返回错误信息
+        return Result.error("用户名或密码错误");
+    }
+```
+
+### Filer过滤器
+
+![1](figs/12-登录校验过滤器.png)
+
+因为所有的Controller对过滤器的逻辑是相同的，可以一起实现。
+
+![1](figs/12-实现Filter.png)
+
+在SB项目中想使用Filter，还需要在主程序中添加注解：**@ServletComponentScan**，表明对Servlet组件的支持。
+
+这种过滤器的拦截路径可以在**@WebFilter**中配置。
+
+![1](figs/12-过滤器拦截路径选择.png)
+
+过滤器甚至可以形成一个**过滤器链**：
+
+![1](figs/12-过滤器链.png)
+
+这种过滤器链的执行顺序是按照**类名的字母先后**执行的。
+
+#### 登录校验过滤器
+
+![1](figs/12-登录校验过滤器设置.png)
+
+实现登录校验过滤器的步骤如下所示：
+
+![1](figs/12-登录校验过滤器的实现步骤.png)
+
+### 拦截器
+
+算是一种Spring框架中提供的过滤器方法，两者很类似。对于拦截器而言，需要进行定义和配置拦截器：
+
+![1](figs/12-定义和配置拦截器.png)
+
+#### 拦截器配置
+
+![1](figs/12-拦截器的拦截路径配置.png)
+
+#### 拦截器执行流程
+
+对于拦截器的执行流程而言，如下所示：
+
+![1](figs/12-拦截器的执行流程.png)
+
+#### 实现拦截器
+
+和过滤器的过程基本相同。
